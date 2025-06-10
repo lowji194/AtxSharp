@@ -8,7 +8,7 @@
 
 - Windows (hoặc Linux/Mac đã cài `adb`)
 - Điện thoại/giả lập đã cài và chạy `atx-agent`
-- Đã thực hiện lệnh `adb forward` để chuyển tiếp cổng (ví dụ:  
+- Đã thực hiện lệnh `adb forward` để chuyển tiếp cổng 
   ```sh
   adb -s emulator-5556 forward tcp:7913 tcp:7912
   ```
