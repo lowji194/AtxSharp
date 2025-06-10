@@ -11,7 +11,7 @@
 - Đã thực hiện lệnh `adb forward` để chuyển tiếp cổng (ví dụ:  
   ```sh
   adb -s emulator-5556 forward tcp:7913 tcp:7912
-  ```)
+  ```
 
 ---
 
