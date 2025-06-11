@@ -1,6 +1,5 @@
 // ========================
 // AtxSharp - Thư viện điều khiển thiết bị Android kiểu Selenium thông qua atx-agent
-// Comment chi tiết từng hàm, class, hướng dẫn rõ ràng, dễ hiểu
 // ========================
 using System;
 using System.Net.Http;
