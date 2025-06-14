@@ -1,15 +1,10 @@
 // ========================
 // AtxSharp - Thư viện điều khiển thiết bị Android kiểu Selenium thông qua atx-agent
 // ========================
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
+using System.Text;
 
 namespace AtxSharp
 {
@@ -117,7 +112,7 @@ namespace AtxSharp
                 @params = new { compressed = false },
                 id = 9
             });
-            return res["result"]?.ToString();
+            return res["result"]?.ToString()!;
         }
 
         /// <summary>
@@ -179,7 +174,7 @@ namespace AtxSharp
                         id = 2
                     };
                     var result = await PostJson($"{baseUrl}/uiautomator", xpathRpc);
-                    var elements = result["result"]?"elements" as JArray;
+                    var elements = result["result"] != null ? result["result"] as JArray : null;
 
                     if (elements != null)
                     {
@@ -188,9 +183,9 @@ namespace AtxSharp
                             if (el["text"]?.ToString() == textRpc["result"]?.ToString())
                             {
                                 var bounds = el["bounds"];
-                                int x = (bounds["left"].Value<int>() + bounds["right"].Value<int>()) / 2;
-                                int y = (bounds["top"].Value<int>() + bounds["bottom"].Value<int>()) / 2;
-                                return new AtxElement(client, baseUrl, x, y, el["text"]?.ToString());
+                                int x = ((bounds?["left"]?.Value<int>() ?? 0) + (bounds?["right"]?.Value<int>() ?? 0)) / 2;
+                                int y = ((bounds?["top"]?.Value<int>() ?? 0) + (bounds?["bottom"]?.Value<int>() ?? 0)) / 2;
+                                return new AtxElement(client, baseUrl, x, y, el["text"]?.ToString() ?? "");
                             }
                         }
                     }
@@ -214,7 +209,7 @@ namespace AtxSharp
                 id = 10
             };
             var res = await PostJson($"{baseUrl}/uiautomator", rpc);
-            var result = res["result"]?"elements" as JArray;
+            var result = res["result"] != null ? res["result"] as JArray : null;
             var elements = new List<AtxElement>();
 
             if (result != null)
@@ -222,9 +217,9 @@ namespace AtxSharp
                 foreach (var el in result)
                 {
                     var bounds = el["bounds"];
-                    int x = (bounds["left"].Value<int>() + bounds["right"].Value<int>()) / 2;
-                    int y = (bounds["top"].Value<int>() + bounds["bottom"].Value<int>()) / 2;
-                    elements.Add(new AtxElement(client, baseUrl, x, y, el["text"]?.ToString()));
+                    int x = ((bounds?["left"]?.Value<int>() ?? 0) + (bounds?["right"]?.Value<int>() ?? 0)) / 2;
+                    int y = ((bounds?["top"]?.Value<int>() ?? 0) + (bounds?["bottom"]?.Value<int>() ?? 0)) / 2;
+                    elements.Add(new AtxElement(client, baseUrl, x, y, el["text"]?.ToString() ?? ""));
                 }
             }
             return elements;
@@ -239,6 +234,82 @@ namespace AtxSharp
             var response = await client.PostAsync(url, content);
             var json = await response.Content.ReadAsStringAsync();
             return JObject.Parse(json);
+        }
+        /// <summary>
+        /// Vuốt màn hình từ (x1, y1) tới (x2, y2), duration tính bằng giây (ví dụ 0.2)
+        /// </summary>
+        public async Task Swipe(int x1, int y1, int x2, int y2, double duration = 0.2)
+        {
+            var swipeData = new { x1, y1, x2, y2, duration };
+            var content = new StringContent(JsonConvert.SerializeObject(swipeData), Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/swipe", content);
+        }
+
+        /// <summary>
+        /// Chạm vào 1 điểm trên màn hình (tap toạ độ)
+        /// </summary>
+        public async Task Tap(int x, int y)
+        {
+            var tapData = new { x, y };
+            var content = new StringContent(JsonConvert.SerializeObject(tapData), Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/touch/click", content);
+        }
+
+        /// <summary>
+        /// Nhấn giữ (long tap) vào 1 điểm trên màn hình (tính bằng giây)
+        /// </summary>
+        public async Task LongTap(int x, int y, double duration = 1.0)
+        {
+            var data = new { x, y, duration };
+            var content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/touch/long_click", content);
+        }
+
+        /// <summary>
+        /// Nhấn nút Back của Android (giống nút trở về vật lý)
+        /// </summary>
+        public async Task PressBack()
+        {
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/press/back", content);
+        }
+
+        /// <summary>
+        /// Mở recent apps (đa nhiệm), đôi lúc sẽ có ích
+        /// </summary>
+        public async Task OpenRecentApps()
+        {
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/press/recent", content);
+        }
+
+        /// <summary>
+        /// Home - trở về màn hình chính
+        /// </summary>
+        public async Task Home()
+        {
+            var content = new StringContent("{}", Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseUrl}/press/home", content);
+        }
+
+        /// <summary>
+        /// Chụp ảnh màn hình và trả về mảng byte (có thể dùng File.WriteAllBytes để lưu ra file)
+        /// </summary>
+        public async Task<byte[]> Screenshot()
+        {
+            return await client.GetByteArrayAsync($"{baseUrl}/screenshot");
+        }
+
+        /// <summary>
+        /// Lấy kích thước màn hình hiện tại (width, height)
+        /// </summary>
+        public async Task<(int width, int height)> GetScreenSize()
+        {
+            var res = await client.GetStringAsync($"{baseUrl}/info");
+            var info = JObject.Parse(res);
+            int width = info["display"]?["width"]?.Value<int>() ?? 0;
+            int height = info["display"]?["height"]?.Value<int>() ?? 0;
+            return (width, height);
         }
     }
 
