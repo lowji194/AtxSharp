@@ -369,5 +369,44 @@ namespace AtxSharp
         {
             return this.Text;
         }
+        /// <summary>
+        /// Mô phỏng nhập text như người thật bằng ADB Keyboard.
+        /// Yêu cầu: Đã cài đặt và chuyển sang ADB Keyboard.
+        /// byChar = true, nhập từng ký tự; false (mặc định) nhập từng từ</param>
+        /// /// </summary>
+        public async Task HumanSendKeyWithAdbKeyboard(string text, int delayMs = 50, bool byChar = false)
+        {
+            await Click();
+            await Task.Delay(300);
+
+            string[] parts;
+            if (byChar)
+            {
+                parts = text.ToCharArray().Select(c => c.ToString()).ToArray();
+            }
+            else
+            {
+                parts = text.Split(' ');
+            }
+
+            string soFar = "";
+            foreach (var part in parts)
+            {
+                if (!string.IsNullOrEmpty(soFar))
+                    soFar += byChar ? "" : " ";
+
+                soFar += part;
+
+                var payload = new
+                {
+                    command = $"am broadcast -a ADB_INPUT_TEXT --es msg \"{soFar}\""
+                };
+                var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+                await client.PostAsync($"{baseUrl}/shell", content);
+
+                await Task.Delay(delayMs);
+            }
+        }
+
     }
 }
