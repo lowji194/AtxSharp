@@ -1,3 +1,6 @@
+Dưới đây là toàn bộ nội dung file README.md của repo lowji194/AtxSharp:
+
+---
 
 # AtxSharp – Thư viện điều khiển Android tự động qua atx-agent (C#)
 
@@ -146,3 +149,5 @@ System.IO.File.WriteAllBytes("screenshot.png", imageBytes);
 
 - Mọi ý kiến/câu hỏi/vấn đề vui lòng tạo Issue hoặc PR trực tiếp trên repo.
 - Tác giả: [lowji194](https://github.com/lowji194)
+
+---
