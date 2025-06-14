@@ -1,7 +1,3 @@
-Dưới đây là toàn bộ nội dung file README.md của repo lowji194/AtxSharp:
-
----
-
 # AtxSharp – Thư viện điều khiển Android tự động qua atx-agent (C#)
 
 **Tự động hóa test app, thao tác UI, điều khiển đa giả lập/máy thật cực dễ kiểu Selenium/WebDriver!**
@@ -89,6 +85,36 @@ await driver.OpenDeeplink("app://product?id=123", "com.example.app");
 - `OpenRecentApps()` – Mở menu đa nhiệm (Recent Apps).
 - `Home()` – Trở về màn hình chính.
 
+### 4.5. Gửi text như người thật với HumanSendKeyWithAdbKeyboard
+
+Mô phỏng nhập liệu như người dùng thật (gõ từng ký tự, tương thích mọi loại text), hãy sử dụng hàm `HumanSendKeyWithAdbKeyboard`.  
+Cách này đặc biệt hữu ích khi `SendKeys` thông thường không hoạt động hoặc nhập sai ký tự.
+
+#### Bước 1: Cài đặt ADB Keyboard trên thiết bị Android
+
+- Tải file APK: [ADB Keyboard Releases](https://github.com/senzhk/ADBKeyBoard/releases)
+- Cài đặt APK lên thiết bị/giả lập.
+- Vào phần Cài đặt → Ngôn ngữ & phương thức nhập → Bàn phím hiện tại → Chọn ADB Keyboard làm bàn phím mặc định.
+
+#### Bước 2: Sử dụng trong code
+
+```csharp
+// Click vào ô Input trước khi thực hiện
+await driver.HumanSendKeyWithAdbKeyboard("Đây là đoạn test 123! 🚀");
+```
+
+#### (Tùy chọn) Chuyển nhanh sang ADB Keyboard bằng lệnh adb
+
+```sh
+adb shell ime set com.android.adbkeyboard/.AdbIME
+```
+Sau khi nhập xong, có thể chuyển lại bàn phím cũ nếu cần.
+
+> **Lưu ý:**
+> - Đảm bảo bạn đã cài ADB Keyboard và đang chọn làm bàn phím mặc định trên thiết bị.
+> - `HumanSendKeyWithAdbKeyboard` giúp nhập liệu ổn định, hỗ trợ mọi loại ký tự, thích hợp với các trường hợp nhập Unicode phức tạp.
+> - Nếu không nhập được ký tự đặc biệt bằng `SendKeys`, hãy dùng hàm này.
+
 ---
 
 ## 5. Ví dụ nâng cao
@@ -149,5 +175,3 @@ System.IO.File.WriteAllBytes("screenshot.png", imageBytes);
 
 - Mọi ý kiến/câu hỏi/vấn đề vui lòng tạo Issue hoặc PR trực tiếp trên repo.
 - Tác giả: [lowji194](https://github.com/lowji194)
-
----
