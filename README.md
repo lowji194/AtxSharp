@@ -184,7 +184,3 @@ System.IO.File.WriteAllBytes("screenshot.png", imageBytes);
 <p align="center">
   <img src="https://pay.theloi.io.vn/QR.png?text=QR+Code" alt="Mời cà phê" width="240" />
 </p>
-## 7. Liên hệ & đóng góp
-
-- Mọi ý kiến/câu hỏi/vấn đề vui lòng tạo Issue hoặc PR trực tiếp trên repo.
-- Tác giả: [lowji194](https://github.com/lowji194)
