@@ -1,3 +1,5 @@
+[![🇺🇸 English](https://img.shields.io/badge/Language-English-1e293b?style=flat-square)](README-EN.md)
+
 # AtxSharp – Thư viện điều khiển Android tự động qua atx-agent (C#)
 
 **Tự động hóa test app, thao tác UI, điều khiển đa giả lập/máy thật cực dễ kiểu Selenium/WebDriver!**
@@ -173,8 +175,8 @@ System.IO.File.WriteAllBytes("screenshot.png", imageBytes);
 
 ## 📫 Liên hệ với tôi
 
-- 📞 **SĐT:** 0963 159 294
-- 🌐 **Website:** [lowji194.github.io](https://lowji194.github.io)
+- 🌐 **Website:** [theloi.io.vn](https://theloi.io.vn)
+- 💬 **Telegram:** [@theloi194](https://t.me/theloi194)
 - 📌 **Facebook:** [Lowji194](https://facebook.com/Lowji194)
 
 ---
